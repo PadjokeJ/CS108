@@ -1,12 +1,9 @@
 package dev.padjokej.week06;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Set;
 
 public class Main {
     public static final String PATH = "src/main/resources/";
