@@ -1,7 +1,9 @@
 package dev.padjokej.week10;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 public class LZWConcreteEncoder implements LZWEncoder {
     private final int maxSize;
@@ -18,7 +20,7 @@ public class LZWConcreteEncoder implements LZWEncoder {
     public List<Integer> encode(String s) {
         List<Integer> l = new ArrayList<>();
 
-        TreeMap<String, Integer> prefixes = new TreeMap();
+        TreeMap<String, Integer> prefixes = new TreeMap<>();
 
         alphabet.forEach(c ->
                 prefixes.put(Character.toString(c), prefixes.size()));
@@ -36,7 +38,8 @@ public class LZWConcreteEncoder implements LZWEncoder {
             }
             l.add(prefixes.get(prefix));
             if (prefixes.size() < maxSize) {
-                prefixes.put(s.substring(i, i + j), prefixes.size());
+                int e = Math.min(i + j, s.length());
+                prefixes.put(s.substring(i, e), prefixes.size());
             }
 
             i += prefix.length();

@@ -13,7 +13,7 @@ public class LZWTest {
     }
 
     public LZWDecoder newDecoder(SortedSet<Character> alphabet, int dictCapacity) {
-        throw new Error("A faire : retourner un décodeur concret (partie 2)");
+        return new LZWConcreteDecoder(alphabet, dictCapacity);
     }
 
     private static SortedSet<Character> stringToSet(String s) {
