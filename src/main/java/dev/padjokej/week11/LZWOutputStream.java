@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.util.*;
 
 public class LZWOutputStream extends OutputStream {
-    private static final int MAX_SIZE = 1 << 12;
+    private static final int MAX_SIZE = 1 << Short.SIZE;
     private static final SortedSet<Integer> ALPHABET = generateByteAlphabet();
 
     private final BitsOutputStream underlyingStream;
@@ -34,7 +34,7 @@ public class LZWOutputStream extends OutputStream {
             return;
 
         List<Integer> prev = prefix.subList(0, prefix.size() - 1);
-        underlyingStream.writeU(prefixes.get(prev), 12);
+        writeOut(prefixes, prev);
 
         if (prefixes.size() < MAX_SIZE)
             prefixes.put(List.copyOf(prefix), prefixes.size());
@@ -45,7 +45,7 @@ public class LZWOutputStream extends OutputStream {
     @Override
     public void close() throws IOException {
         if (!prefix.isEmpty()) {
-            underlyingStream.writeU(prefixes.get(prefix), 12);
+            writeOut(prefixes, prefix);
         }
         underlyingStream.close();
     }
@@ -58,5 +58,13 @@ public class LZWOutputStream extends OutputStream {
         }
 
         return alph;
+    }
+
+    static int bitsToEncode(int dictSize) {
+        return Integer.SIZE - Integer.numberOfLeadingZeros(dictSize - 1);
+    }
+
+    private void writeOut(Map<List<Integer>, Integer> dictionary, List<Integer> prefix) throws IOException {
+        underlyingStream.writeU(dictionary.get(prefix), bitsToEncode(dictionary.size()));
     }
 }

@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.*;
 
 public class LZWInputStream extends InputStream {
-    private static final int MAX_SIZE = 1 << 12;
+    private static final int MAX_SIZE = 1 << Short.SIZE;
     private static final SortedSet<Integer> ALPHABET = LZWOutputStream.generateByteAlphabet();
     private final BitsInputStream underlyingStream;
 
@@ -28,7 +28,9 @@ public class LZWInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         if (contents.isEmpty()) {
-            int v = underlyingStream.read(12);
+            boolean willAdd = prefixes.size() < MAX_SIZE && !prev.isEmpty();
+            int v = underlyingStream.read(
+                    LZWOutputStream.bitsToEncode(prefixes.size() + (willAdd ? 1 : 0)));
 
             // We have reached end of stream
             if (v == -1) return v;
@@ -36,7 +38,7 @@ public class LZWInputStream extends InputStream {
             List<Integer> n = (v < prefixes.size()) ? prefixes.get(v)
                     : extendedPrefix(prev, prev.getFirst());
 
-            if (prefixes.size() < MAX_SIZE && !prev.isEmpty()) {
+            if (willAdd) {
                 prefixes.add(extendedPrefix(prev, n.getFirst()));
             }
 
