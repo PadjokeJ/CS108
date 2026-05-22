@@ -1,5 +1,7 @@
 package dev.padjokej.week11;
 
+import dev.padjokej.week12.BitsInputStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -7,14 +9,14 @@ import java.util.*;
 public class LZWInputStream extends InputStream {
     private static final int MAX_SIZE = 1 << 12;
     private static final SortedSet<Integer> ALPHABET = LZWOutputStream.generateByteAlphabet();
-    private final Bits12InputStream underlyingStream;
+    private final BitsInputStream underlyingStream;
 
     private final List<List<Integer>> prefixes;
     private final Deque<Integer> contents;
     private List<Integer> prev;
 
     public LZWInputStream(InputStream inputStream) {
-        underlyingStream = new Bits12InputStream(inputStream);
+        underlyingStream = new BitsInputStream(inputStream);
 
         prefixes = new ArrayList<>(MAX_SIZE);
         ALPHABET.forEach(i -> prefixes.add(Collections.singletonList(i)));
@@ -26,7 +28,7 @@ public class LZWInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         if (contents.isEmpty()) {
-            int v = underlyingStream.readU12();
+            int v = underlyingStream.read(12);
 
             // We have reached end of stream
             if (v == -1) return v;
