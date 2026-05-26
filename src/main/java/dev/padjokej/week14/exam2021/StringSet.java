@@ -1,4 +1,4 @@
-package dev.padjokej.week14;
+package dev.padjokej.week14.exam2021;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -99,10 +99,10 @@ public final class StringSet implements Iterable<String> {
         return false;
     }
 
-//    public final class ComparableSet<T extends Comparable> implements Iterable<T> {}
+//    public final class ComparableSet<T extends Comparable<T>> implements Iterable<T> {}
 
     public static class Builder {
-        String[] elements = new String[0];
+        String[] elements = new String[10];
         int size = 0;
 
         public Builder add(String s) {
@@ -115,7 +115,7 @@ public final class StringSet implements Iterable<String> {
         }
 
         public Builder compact() {
-            Arrays.sort(elements);
+            Arrays.sort(elements, 0, size);
 
             String[] newElements = elements.clone();
 
